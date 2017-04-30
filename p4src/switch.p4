@@ -18,7 +18,7 @@ limitations under the License. */
     template: switch.p4
  *********************************/
 
-#include "includes/header.p4"
+#include "includes/headers.p4"
 #include "includes/parser.p4"
 // TODO: add your blocks
 

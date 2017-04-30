@@ -3,9 +3,12 @@ NSP4: Network Simulator for P4
 
 ```
 .
+├── clean.sh
 ├── env.sh
 ├── init
-│   └── run_demo.sh
+│   ├── run_demo.sh
+│   ├── simple_switch_CLI
+│   └── topo.txt
 ├── p4src
 │   ├── blocks
 │   ├── includes
@@ -14,8 +17,6 @@ NSP4: Network Simulator for P4
 │   └── switch.p4
 └── script
     ├── p4ovs_mininet.py
-    ├── simple_switch_CLI
-    ├── topo.py
-    └── topo.txt
+    └── topo.py
 
 ```
