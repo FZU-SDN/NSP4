@@ -6,4 +6,4 @@
 rm -rf init/*.pcap 
 rm -rf init/*.json
 rm -rf script/*.pyc
-
+sudo mn -c
