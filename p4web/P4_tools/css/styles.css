@@ -1,0 +1,116 @@
+/*Global Styles*/
+
+body {
+    background: #f1f4f7;
+    padding-top: 50px;
+    width: auto;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #999999;
+    line-height: 25px;
+    letter-spacing: 1px
+}
+
+p {
+    color: #777;
+}
+
+
+.panel-heading {
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.025em;
+    line-height: 45px;
+}
+
+
+.navbar-header .navbar-brand {
+    color: #fff;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+.navbar-brand span {
+    color: #30a5ff;
+}
+
+
+/*Navbar*/
+
+.navbar {
+    border: 0;
+}
+
+.user-menu {
+    display: inline-block;
+    margin-top: 14px;
+    margin-right: 10px;
+    float: right;
+    list-style: none;
+    padding: 0;
+}
+
+.user-menu a {
+    color: #fff;
+}
+
+.user-menu a:hover {
+    text-decoration: none;
+}
+
+
+/* Sidebar */
+
+.sidebar {
+    display: block;
+    background-color: #fff;
+    padding: 0;
+    display: none;
+}
+
+.sidebar form {
+    padding: 20px 15px 5px 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        display: block;
+        position: fixed;
+        top: 50px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: #fff;
+        box-shadow: 1px 0px 10px rgba(0, 0, 0, .05);
+    }
+    .navbar-header {
+        width: 100%;
+    }
+}
+
+.sidebar ul.nav li.divider {
+    border-bottom: 1px solid #eee;
+    margin: 20px 0;
+}
+
+.sidebar ul.nav .active a {
+    color: #fff;
+    background-color: #30a5ff;
+}
+
+.input-group{
+    width: 450px;
+}
+
+.input-group-addon{
+    width: 120px;
+}

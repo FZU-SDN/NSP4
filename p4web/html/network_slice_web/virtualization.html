@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>网络虚拟化</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-table.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+
+    <script src="js/inputGroup-1.1.js"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><span>网络虚拟化 </span></a>
+            <ul class="user-menu">
+                <li class="dropdown pull-right">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 用户 <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#"><span class="glyphicon glyphicon-off"></span> 注销</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+    <form role="search">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+        </div>
+    </form>
+    <ul class="nav menu">
+        <li><a href="index.html"><span class="glyphicon glyphicon-home"></span> 主页</a></li>
+        <li><a href="virtualization.html"><span class="glyphicon glyphicon-user"></span> 虚拟化启动装置</a></li>
+        <div style="padding-left: 30px" id="topo"><li ><a href="virtualization.html">拓扑查看</a></li>
+</div><li role="presentation" class="divider"></li>
+
+    </ul>
+
+</div><!--/.sidebar-->
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">虚拟化</div>
+                <div class="panel-body">
+
+                        <button type="button" class="btn btn-primary btn-lg"  data-toggle="modal" data-target="#myModal">启动虚拟化</button>
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">是否开启虚拟化</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        将启动虚拟化开关，请小心行事
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+                                        <button id='showtopo' type="button" class="btn btn-primary" data-dismiss="modal">开启虚拟化</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal1">关闭虚拟化</button>
+                        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel1">是否关闭虚拟化</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        将关闭虚拟化开关
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+                                        <button id='hidetopo' type="button" class="btn btn-primary" data-dismiss="modal">关闭虚拟化</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                <div id="topo1">
+                <div class="poanel-bdy" style="text-align:center;">
+                    <canvas width="1350" height="500" id="canvas" ></canvas>
+
+                </div>
+                <button type="button" class="btn btn-link btn-lg" onclick="creat_topo()">  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Phy &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <button type="button" class="btn btn-link btn-lg" onclick="creat_topo1()"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp V1 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <button type="button" class="btn btn-link btn-lg" onclick="creat_topo2()"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp V2 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <button type="button" class="btn btn-linkbei btn-lg" onclick="creat_topo3()"> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp V3 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div><!--/.row-->
+</div><!--/.main-->
+
+
+<script>
+
+
+    $(function() {
+        $('.input-group-add').initInputGroup({
+            'widget' : 'input', //输入框组中间的空间类型
+            /*'add' : '添加',
+             'del' : '删除'*/
+        });
+    });
+</script>
+<script>
+
+
+</script>
+<script src="js/jtopo-0.4.6-min.js"></script>
+<script src="js/jquery-3.1.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    $(window).on('resize', function () {
+        if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+    })
+    $(window).on('resize', function () {
+        if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+    })
+</script>
+<script>
+    var canvas = document.getElementById('canvas');
+    var stage = new JTopo.Stage(canvas); // 创建一个舞台对
+    var scene = new JTopo.Scene(stage); // 创建一个场景对象
+
+
+    function creat_topo() {
+        scene.clear();
+        var node1 = new JTopo.Node("S1");
+        var node2 = new JTopo.Node("S2");
+        var node3 = new JTopo.Node("S4");
+        var node4 = new JTopo.Node("S3");
+
+        node1.font = "24px Consolas";
+        node1.fontColor = "0,0,0";
+
+        node2.font = "24px Consolas";
+        node2.fontColor = "0,0,0";
+
+        node3.font = "24px Consolas";
+        node3.fontColor = "0,0,0";
+
+        node4.font = "24px Consolas";
+        node4.fontColor = "0,0,0";
+
+        node1.setLocation(180,220);
+        node2.setLocation(400,50);
+        node3.setLocation(600,220);
+        node4.setLocation(400,400);
+
+        node1.setSize(100, 100);
+        node2.setSize(100, 100);
+        node3.setSize(100, 100);
+        node4.setSize(100, 100);
+
+        node1.setImage('switch2.png');
+        node2.setImage('switch2.png');
+        node3.setImage('switch2.png');
+        node4.setImage('switch2.png');
+
+
+        scene.add(node1);
+        scene.add(node2);
+        scene.add(node3);
+        scene.add(node4);
+
+        var link1 = new JTopo.Link(node1, node2);
+        var link2 = new JTopo.Link(node2, node3);
+        var link3 = new JTopo.Link(node3, node4);
+        var link4 = new JTopo.Link(node4, node1);
+
+//                link1.style.webkitTextStrokeColor = '0,0,0';
+        link1.strokeColor = "96,96,96";
+        link1.linkeWidth = 0.5;
+        link2.strokeColor = "96,96,96";
+        link2.linkeWidth = 0.5;
+        link3.strokeColor = "96,96,96";
+        link3.linkeWidth = 0.5;
+        link4.strokeColor = "96,96,96";
+        link4.linkeWidth = 0.5;
+
+
+        scene.add(link1);
+        scene.add(link2);
+        scene.add(link3);
+        scene.add(link4);
+
+    }
+</script>
+<script>
+
+    $div1=$('#topo');
+    $div2=$('#topo1');
+    $div1.hide();
+    $div2.hide();
+    $(function(){
+        $('#showtopo').click(function(){
+
+            if($div1.is(':hidden')){
+                $div1.show();
+                $div2.show();
+            }
+        });
+    });
+    $(function(){
+        $('#hidetopo').click(function(){
+            if($div1.is(':visible')){
+                $div1.hide();
+                $div2.hide();
+            }
+        });
+    });
+
+
+    function creat_topo1() {
+        var canvas = document.getElementById('canvas');
+        var ctx=canvas.getContext("2d");
+//        canvas.width = canvas.width;
+//        canvas.clearData();
+//        ctx.clearRect(0,0,1350,500);
+        scene.clear();
+
+        var stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+        var scene = new JTopo.Scene(stage); // 创建一个场景对象
+
+        var node1 = new JTopo.Node("vS1");
+        var node2 = new JTopo.Node("vS2");
+        var node3 = new JTopo.Node("vS3");
+//                var node4 = new JTopo.Node("VS4");
+
+        node1.font = "24px Consolas";
+        node1.fontColor = "0,0,0";
+
+        node2.font = "24px Consolas";
+        node2.fontColor = "0,0,0";
+
+        node3.font = "24px Consolas";
+        node3.fontColor = "0,0,0";
+
+//                node4.font = "24px Consolas";
+//                node4.fontColor = "0,0,0";
+
+        node1.setLocation(180,220);
+        node2.setLocation(400,50);
+        node3.setLocation(600,220);
+//                node4.setLocation(400,400);
+
+        node1.setSize(100, 100);
+        node2.setSize(100, 100);
+        node3.setSize(100, 100);
+//                node4.setSize(100, 100);
+
+        node1.setImage('switch2.png');
+        node2.setImage('switch2.png');
+        node3.setImage('switch2.png');
+//                node4.setImage('switch2.png');
+
+
+        scene.add(node1);
+        scene.add(node2);
+        scene.add(node3);
+//                scene.add(node4);
+
+        var link1 = new JTopo.Link(node1, node2);
+        var link2 = new JTopo.Link(node2, node3);
+//                var link3 = new JTopo.Link(node3, node4);
+//                var link4 = new JTopo.Link(node4, node1);
+
+//                link1.style.webkitTextStrokeColor = '0,0,0';
+        link1.strokeColor = "96,96,96";
+        link1.linkeWidth = 0.5;
+        link2.strokeColor = "96,96,96";
+        link2.linkeWidth = 0.5;
+//                link3.strokeColor = "96,96,96";
+//                link3.linkeWidth = 0.5;
+//                link4.strokeColor = "96,96,96";
+//                link4.linkeWidth = 0.5;
+
+
+        scene.add(link1);
+        scene.add(link2);
+//                scene.add(link3);
+//                scene.add(link4);
+
+    }
+</script>
+<script>
+    function creat_topo2() {
+
+        scene.clear();
+
+        var node1 = new JTopo.Node("vS1");
+        var node2 = new JTopo.Node("vS2");
+        var node3 = new JTopo.Node("vS4");
+        var node4 = new JTopo.Node("vS3");
+
+        node1.font = "24px Consolas";
+        node1.fontColor = "0,0,0";
+
+        node2.font = "24px Consolas";
+        node2.fontColor = "0,0,0";
+        //
+        node3.font = "24px Consolas";
+        node3.fontColor = "0,0,0";
+
+        node4.font = "24px Consolas";
+        node4.fontColor = "0,0,0";
+
+        node1.setLocation(180,220);
+        node2.setLocation(400,50);
+        node3.setLocation(600,220);
+        node4.setLocation(400,400);
+
+        node1.setSize(100, 100);
+        node2.setSize(100, 100);
+        node3.setSize(100, 100);
+        node4.setSize(100, 100);
+
+        node1.setImage('switch2.png');
+        node2.setImage('switch2.png');
+        node3.setImage('switch2.png');
+        node4.setImage('switch2.png');
+
+
+        scene.add(node1);
+        //         scene.add(node2);
+        scene.add(node3);
+        scene.add(node4);
+
+        var link1 = new JTopo.Link(node1, node2);
+        var link2 = new JTopo.Link(node2, node3);
+        var link3 = new JTopo.Link(node3, node4);
+        var link4 = new JTopo.Link(node4, node1);
+
+        //                link1.style.webkitTextStrokeColor = '0,0,0';
+        link1.strokeColor = "96,96,96";
+        link1.linkeWidth = 0.5;
+        link2.strokeColor = "96,96,96";
+        link2.linkeWidth = 0.5;
+        link3.strokeColor = "96,96,96";
+        link3.linkeWidth = 0.5;
+        link4.strokeColor = "96,96,96";
+        link4.linkeWidth = 0.5;
+
+
+        //         scene.add(link1);
+        //         scene.add(link2);
+        scene.add(link3);
+        scene.add(link4);
+
+    }
+</script>
+<script>
+    function creat_topo3() {
+        scene.clear();
+        var node1 = new JTopo.Node("vS1");
+        var node2 = new JTopo.Node("vS2");
+        var node3 = new JTopo.Node("vS4");
+        var node4 = new JTopo.Node("vS3");
+
+        node1.font = "24px Consolas";
+        node1.fontColor = "0,0,0";
+
+        node2.font = "24px Consolas";
+        node2.fontColor = "0,0,0";
+
+        node3.font = "24px Consolas";
+        node3.fontColor = "0,0,0";
+
+        node4.font = "24px Consolas";
+        node4.fontColor = "0,0,0";
+
+        node1.setLocation(180,220);
+        node2.setLocation(400,50);
+        node3.setLocation(600,220);
+        node4.setLocation(400,400);
+
+        node1.setSize(100, 100);
+        node2.setSize(100, 100);
+        node3.setSize(100, 100);
+        node4.setSize(100, 100);
+
+        node1.setImage('switch2.png');
+        node2.setImage('switch2.png');
+        node3.setImage('switch2.png');
+        node4.setImage('switch2.png');
+
+
+        scene.add(node1);
+        scene.add(node2);
+        scene.add(node3);
+        scene.add(node4);
+
+        var link1 = new JTopo.Link(node1, node2);
+        var link2 = new JTopo.Link(node2, node3);
+        var link3 = new JTopo.Link(node3, node4);
+        var link4 = new JTopo.Link(node4, node1);
+
+        //                link1.style.webkitTextStrokeColor = '0,0,0';
+        link1.strokeColor = "96,96,96";
+        link1.linkeWidth = 0.5;
+        link2.strokeColor = "96,96,96";
+        link2.linkeWidth = 0.5;
+        link3.strokeColor = "96,96,96";
+        link3.linkeWidth = 0.5;
+        link4.strokeColor = "96,96,96";
+        link4.linkeWidth = 0.5;
+
+
+        scene.add(link1);
+        scene.add(link2);
+        scene.add(link3);
+        scene.add(link4);
+
+    }
+</script>
+
+<script>
+    function creat_topo1() {
+        scene.clear();
+        var node1 = new JTopo.Node("vS1");
+        var node2 = new JTopo.Node("vS2");
+        var node3 = new JTopo.Node("vS4");
+        var node4 = new JTopo.Node("vS3");
+
+        node1.font = "24px Consolas";
+        node1.fontColor = "0,0,0";
+
+        node2.font = "24px Consolas";
+        node2.fontColor = "0,0,0";
+
+        node3.font = "24px Consolas";
+        node3.fontColor = "0,0,0";
+
+        node4.font = "24px Consolas";
+        node4.fontColor = "0,0,0";
+
+        node1.setLocation(180,220);
+        node2.setLocation(400,50);
+        node3.setLocation(600,220);
+        node4.setLocation(400,400);
+
+        node1.setSize(100, 100);
+        node2.setSize(100, 100);
+        node3.setSize(100, 100);
+        node4.setSize(100, 100);
+
+        node1.setImage('switch2.png');
+        node2.setImage('switch2.png');
+        node3.setImage('switch2.png');
+        node4.setImage('switch2.png');
+
+
+        scene.add(node1);
+        scene.add(node2);
+        scene.add(node3);
+//        scene.add(node4);
+
+        var link1 = new JTopo.Link(node1, node2);
+        var link2 = new JTopo.Link(node2, node3);
+//        var link3 = new JTopo.Link(node3, node4);
+//        var link4 = new JTopo.Link(node4, node1);
+
+        //                link1.style.webkitTextStrokeColor = '0,0,0';
+        link1.strokeColor = "96,96,96";
+        link1.linkeWidth = 0.5;
+        link2.strokeColor = "96,96,96";
+        link2.linkeWidth = 0.5;
+//        link3.strokeColor = "96,96,96";
+//        link3.linkeWidth = 0.5;
+//        link4.strokeColor = "96,96,96";
+//        link4.linkeWidth = 0.5;
+
+
+        scene.add(link1);
+        scene.add(link2);
+//        scene.add(link3);
+//        scene.add(link4);
+
+    }
+</script>
+</body>
+
+</html>
