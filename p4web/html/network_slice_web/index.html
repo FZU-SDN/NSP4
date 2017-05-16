@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>网络虚拟化</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body >
+ <!-- /.navbar-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><span>网络虚拟化 </span></a>
+
+
+                <button onclick="nothing()">aaa</button>
+
+
+
+                <ul class="user-menu">
+                    <li class="dropdown pull-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> 用户 <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#"><span class="glyphicon glyphicon-off"></span> 注销</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- /sidebar -->
+    <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+        <form role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search">
+            </div>
+        </form>
+        <ul class="nav menu">
+            <li class="active"><a href="index.html"><span class="glyphicon glyphicon-home"></span> 主页</a></li>
+            <li ><a href="virtualization.html"><span class="glyphicon glyphicon-user"></span> 虚拟化启动装置</a></li>
+            <!--<li ><a href="virtualization.html"><span class="glyphicon glyphicon-user"></span> 拓扑查看</a></li>-->
+            <li role="presentation" class="divider"></li>
+        </ul>
+    </div>
+
+    <!--/.main-->
+    <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">拓扑图</div>
+                    <div class="poanel-bdy" style="text-align:center;">
+                        <canvas width="1400" height="550" id="canvas"></canvas>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <button class="btn btn-primary btn-lg" onclick="creat_topo()">启动通信</button>
+
+            </div>
+        </div>
+    </div>
+
+
+        <script src="js/jtopo-0.4.6-min.js"></script>
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script>
+            $(window).on('resize', function () {
+                if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+            })
+            $(window).on('resize', function () {
+                if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+            })
+        </script>
+        <script>
+
+            var canvas = document.getElementById('canvas');
+            var stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+            var scene = new JTopo.Scene(stage); // 创建一个场景对象
+            function creat_topo() {
+
+//                alert("hh");
+                //                scene.clear();
+
+                scene.clear();
+                $.ajax({url:"ajax/exec_shell.php",async:false});
+                var node1 = new JTopo.Node("S1");
+                var node2 = new JTopo.Node("S2");
+                var node3 = new JTopo.Node("S4");
+                var node4 = new JTopo.Node("S3");
+
+                node1.font = "24px Consolas";
+                node1.fontColor = "0,0,0";
+
+                node2.font = "24px Consolas";
+                node2.fontColor = "0,0,0";
+
+                node3.font = "24px Consolas";
+                node3.fontColor = "0,0,0";
+
+                node4.font = "24px Consolas";
+                node4.fontColor = "0,0,0";
+
+                node1.setLocation(180,220);
+                node2.setLocation(400,50);
+                node3.setLocation(600,220);
+                node4.setLocation(400,400);
+
+                node1.setSize(100, 100);
+                node2.setSize(100, 100);
+                node3.setSize(100, 100);
+                node4.setSize(100, 100);
+
+                node1.setImage('switch2.png');
+                node2.setImage('switch2.png');
+                node3.setImage('switch2.png');
+                node4.setImage('switch2.png');
+
+
+                scene.add(node1);
+                scene.add(node2);
+                scene.add(node3);
+                scene.add(node4);
+
+                var link1 = new JTopo.Link(node1, node2);
+                var link2 = new JTopo.Link(node2, node3);
+                var link3 = new JTopo.Link(node3, node4);
+                var link4 = new JTopo.Link(node4, node1);
+
+//                link1.style.webkitTextStrokeColor = '0,0,0';
+                link1.strokeColor = "96,96,96";
+                link1.linkeWidth = 0.5;
+                link2.strokeColor = "96,96,96";
+                link2.linkeWidth = 0.5;
+                link3.strokeColor = "96,96,96";
+                link3.linkeWidth = 0.5;
+                link4.strokeColor = "96,96,96";
+                link4.linkeWidth = 0.5;
+
+
+                scene.add(link1);
+                scene.add(link2);
+                scene.add(link3);
+                scene.add(link4);
+//                scene.clear();
+
+            }
+            function nothing() {
+                $.ajax({ url: "/ok", context: document.body,
+                         data: {"switches":4,"hosts":6,"linksnum":4,"links1":"h1 s1","links2":"s1 s2","links3":"h2 s2","links4":"s3 s4"},
+                         success: function(data){
+                                  alert(data);
+                 }});
+            }
+        </script>
+
+</body>
+
+</html>

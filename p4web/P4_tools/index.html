@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>P4编译工具</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+rr
+<body >
+ <!-- /.navbar-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><span>P4编译工具 </span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="sidebar-collapse" class="col-sm-4 sidebar">
+    <div style="width: 50px;height: 50px;"></div>
+    <div class="alert alert-info" role="alert">P4文件放在....</div>
+     <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">主机Host</span>
+      <input id="host-number" type="text" class="form-control" placeholder="输入主机数目" aria-describedby="basic-addon1">
+    </div>
+    <li role="presentation" class="divider"></li>
+    <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">交换机Switch</span>
+      <input id="switch-number" type="text" class="form-control" placeholder="输入交换机数目" aria-describedby="basic-addon1">
+    </div>
+    <li role="presentation" class="divider"></li>
+    <div id="links">
+      <span class="input-group-addon" id="basic-addon1">链路Links</span>
+        <div class="input-group-add" >  
+        </div>  
+    <li role="presentation" class="divider">例：s1 s2 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h1-h2</li>
+    </div>
+
+<div class="btn-group" role="group" style="padding-left: 15px;">
+  <button type="button" class="btn btn-default" onclick="pre_handle()">提交</button>
+</div>
+    </div><!--/.sidebar-->
+
+    <!--/.main-->
+    <div class="col-sm-8 col-sm-offset-4 main">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">拓扑图</div>
+                    <div class="poanel-bdy" style="text-align:center;">
+                        <canvas width="1300" height="400" id="canvas"></canvas>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">表格Table</div>
+                  <!-- Table -->
+                  <table class="table table-bordered table-hover table-responsive">
+                    <tr>
+                    <td> s1</td>
+                    <td> s2</td>
+                    <td> s3</td>
+                    <td> s4</td>
+                    </tr>
+                  </table>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script src="js/jtopo-0.4.6-min.js"></script>
+        <script src="js/jquery-3.1.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/intputGroup.js"></script>
+
+</body>
+<script>
+    $(window).on('resize', function () {
+        if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+    })
+    $(window).on('resize', function () {
+        if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+    })
+
+    $(function() {
+        $('.input-group-add').initInputGroup({
+             'widget' : 'input', //输入框组中间的空间类型
+              /*'add' : '添加',
+              'del' : '删除'*/
+              'field': 'data',
+          });
+    });
+//    $('#host-number')[0].value
+//
+//    $('.input-group > .form-control').slice(2)[0].value
+
+
+    var canvas = document.getElementById('canvas');
+    var stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+    var scene = new JTopo.Scene(stage); // 创建一个场景对象
+
+    var links_table;
+    var links_table_raw;
+    var host_num;
+    var switch_num;
+    function pre_handle() {
+
+        try {
+            host_num = parseInt($('#host-number')[0].value);
+            if (isNaN(host_num)) throw new Error('主机数目输入错误');
+            switch_num = parseInt($('#switch-number')[0].value);
+            if (isNaN(switch_num)) throw  new Error('交换机数目输入错误');
+        } catch (e){
+            alert(e);
+            return;
+        }
+
+        links_table_raw = $('.input-group > .form-control').slice(2).toArray();
+         links_table = links_table_raw.map(function (item) {
+            return item.value;
+        }).filter(x => x);
+//        var temp = links_table.map(x => x.split(' '));
+        var re = /[hs]\d+\s+[hs]\d+/;
+        try{
+            var link_num = links_table.length;
+            if (link_num <= 0) throw  new Error('无链路信息');
+        }catch(e){
+            alert(e);
+            return;
+        }
+
+        var pre_links_num = links_table.length;
+
+
+        try {
+            for (var i=0;i<links_table.length;i++)
+                if(!re.test(links_table[i])) throw new Error("链路信息出错");
+        }catch (e){
+            alert(e);
+            return;
+        }
+
+        var temp = links_table.map(item => item.split(/\s+/).sort()).filter(function (item) {
+            var tempSet = new Set(item);
+            var tempArr = [...tempSet];
+            return tempArr.length == 2;
+        });
+
+        temp = Array.from(new Set(temp.map(x => x.join(' '))));
+        links_table = temp;
+
+        var now_links_num = links_table.length;
+
+        try {
+            if(pre_links_num != now_links_num) throw new Error("链路信息出现重复或自环现象");
+        }catch (e){
+            alert(e);
+            return ;
+        }
+
+        console.log("links_table",links_table);
+
+
+
+        var h = 0, s = 0, flag = 0, hArr = [], sArr = [];
+        var arr = links_table.map(x => x.split(/([hs])|\s+/).filter(x => x));
+        console.log(arr);
+        var res = arr.every(function (item) {
+            item.forEach(function (subItem) {
+                if (subItem == 'h') {
+                    ++h;
+                    flag = 0;
+                } else if (subItem == 's') {
+                    ++s;
+                    flag = 1;
+                } else if (flag == 0) {
+                    hArr.push(parseInt(subItem));
+                } else {
+                    sArr.push(parseInt(subItem));
+                }
+            });
+            if (h == 2) {
+                alert('主机和主机之间不能有连接');
+                h = 0, s = 0, hArr = [], sArr = [];
+                return false;
+            }else if(s == 2 && sArr[0] == sArr[1]){
+                alert('不能出现交换机自环');
+                h = 0, s = 0, hArr = [], sArr = [];
+                return false;
+            }
+            try {
+                if (hArr[0] > host_num || hArr[1] > host_num || sArr[0] > switch_num || sArr[1] > switch_num)
+                    throw new Error("链路主机信息超过指定范围");
+            }catch (e){
+                alert(e);
+                return false;
+            }
+            h = 0, s = 0, hArr = [], sArr = [];
+            return true;
+        });
+        if (!res) return;
+
+        creat_topo();
+        request();
+
+    }
+
+    function request() {
+
+        var host_num = parseInt($('#host-number')[0].value);
+        var switch_num = parseInt($('#switch-number')[0].value);
+
+        var link_num = links_table.length;
+        console.log("host_num",host_num);
+        console.log("switch_num",switch_num);
+        console.log("link_num",link_num);
+
+        var links_information = '';
+        for(var i=0;i<links_table.length;i++){
+            links_information = links_information + links_table[i] + ',';
+        }
+
+        $.ajax({ url: "/ok", context: document.body,
+            data: {"switches":switch_num,"hosts":host_num,"linksnum":link_num,"link_information":links_information},
+            success: function(data){
+            }});
+    }
+
+    function creat_topo() {
+
+                var hosts = new Array();
+                var switches = new Array();
+                var links = new Array();
+//                var links_table = $('.input-group > .form-control').slice(2).toArray();
+//                links_table = links_table.map(function (item) {
+//                    return item.value;
+//                });
+                console.log(links_table);
+//                showModalDialog(links_table);
+
+                var host_num = parseInt($('#host-number')[0].value);
+                var switch_num = parseInt($('#switch-number')[0].value);
+                var link_num = links_table.length;
+
+
+                console.log("host_num",host_num);
+                console.log("switch_num",switch_num);
+                console.log("link_num",link_num);
+                //创建拓扑结构
+                scene.clear();
+
+                for(i=0;i<switch_num;i++){
+                    switches[i+1] = new JTopo.Node('S'+(i+1).toString());
+                }
+
+                for(i=0;i<host_num;i++){
+                    hosts[i+1] = new JTopo.Node('H'+(i+1).toString());
+                }
+
+
+                for(i=0;i<switch_num;i++){
+                    switches[i+1].font = "24px Consolas";
+                    switches[i+1].fontColor = "0,0,0";
+                }
+
+                for(i=0;i<host_num;i++){
+                    hosts[i+1].font = "24px Consolas";
+                    hosts[i+1].fontColor = "0,0,0";
+                }
+
+                for(i=0;i<switch_num;i++){
+                    switches[i+1].setLocation(10+i*100,10);
+                    switches[i+1].setSize(100,100);
+                    switches[i+1].setImage('switch2.png');
+                    scene.add(switches[i+1]);
+                }
+
+                for(i=0;i<host_num;i++){
+                    hosts[i+1].setLocation(10+i*70,200);
+                    hosts[i+1].setSize(50,50);
+                    hosts[i+1].setImage('host.png');
+                    scene.add(hosts[i+1]);
+                }
+
+                for(i=0;i<link_num;i++){
+
+                    var h = 0, s = 0, flag = 0, hArr = [], sArr = [];
+                    console.log('links_table: '+links_table[i]);
+                    var arr = links_table[i].split(/([hs])|\s+/).filter(x => x);
+                    console.log(arr);
+                    arr.forEach(function (ele, index, arr) {
+                        if (ele == 'h') {
+                            ++h;
+                            flag = 0;
+                        } else if (ele == 's') {
+                            ++s;
+                            flag = 1;
+                        } else if (flag == 0) {
+                            hArr.push(parseInt(ele));
+                        } else {
+                            sArr.push(parseInt(ele));
+                        }
+                    });
+//                    console.log("h_num: ",h);
+//                    console.log("s_num: ",s);
+//                    console.log("h array: " + hArr);
+//                    console.log("s array: " + sArr);
+                    if(h==1&&s==1){
+                        links[i] = new JTopo.Link(switches[sArr[0]], hosts[hArr[0]]);
+                    }
+                    else if(s==2){
+                        links[i] = new JTopo.Link(switches[sArr[0]], switches[sArr[1]]);
+                        links[i].strokeColor = "96,96,96";
+                    }
+                    scene.add(links[i]);
+                }
+     }
+
+</script>
+
+</html>
