@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import re
 import argparse
 from time import sleep
 import os
@@ -47,16 +48,27 @@ def main():
         for i in range(num) :
             paras = paras+' '
             paras = paras+para[i]
-        table_info_cmd = "echo 'table_add %s %s %s =>%s' > cmd/table_add.txt" % (table_name, key, action, paras)
+        table_info_cmd = "echo 'table_add %s %s %s =>%s' > cmd/table_add.txt" % (table_name, action, key, paras)
     else :
-        table_info_cmd = "echo 'table_add %s %s %s =>' > cmd/table_add.txt" % (table_name, key, action)
+        table_info_cmd = "echo 'table_add %s %s %s =>' > cmd/table_add.txt" % (table_name, action, key)
 
     #print(table_info_cmd)
 
     os.system(table_info_cmd)
     cmd = "./simple_switch_CLI --thrift-port %d < cmd/table_add.txt" % thrift_port
-    os.system(cmd)
+    os.system("%s > handle_tmp.txt" % cmd)
     os.system("rm -rf cmd/table_add.txt")
+    
+    # Get Handle
+    text = open('handle_tmp.txt', "r")
+    for line in text.readlines():
+        if line[0] == 'E':
+            for i in range(len(line)):
+                if line[i].isdigit():
+                    break
+            handle = line[i:-1]
+            os.system("echo '%s' >> handle/%s_%s.txt" % (handle, sw_name, table_name)) 
+    os.system("rm -rf handle_tmp.txt")        
 
 if __name__ == '__main__':
     main()

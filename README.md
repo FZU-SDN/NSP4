@@ -3,7 +3,7 @@ NSP4: Network Simulator for P4
 
 ```
 .
-├── clean.sh
+├── cleanup.sh
 ├── env.sh
 ├── init
 │   ├── run_demo.sh
@@ -15,8 +15,22 @@ NSP4: Network Simulator for P4
 │   │   ├── headers.p4
 │   │   └── parser.p4
 │   └── switch.p4
-└── script
-    ├── p4ovs_mininet.py
-    └── topo.py
+├── script
+│   ├── p4ovs_mininet.py
+│   ├── topo.py
+│   └── veth_setup.sh
+└── src
+    ├── cmd
+    │   ├── show_tables.txt
+    │   └── table_delete.txt
+    ├── handle
+    │   └── readme.md
+    ├── show_sw_tables.py
+    ├── show_table_info.py
+    ├── simple_switch_CLI
+    ├── table_add_entry.py
+    ├── table_delete_entry.py
+    └── todo.md
 
+8 directories, 20 files
 ```

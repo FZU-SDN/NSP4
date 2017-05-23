@@ -61,6 +61,7 @@ action broadcast() {
 table dmac {
     reads {
         ethernet.dstAddr : exact;
+        //ethernet.srcAddr : exact; // test
     }
     actions {
         forward;
