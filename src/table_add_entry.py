@@ -14,12 +14,10 @@ parser.add_argument('--swname', help='Switch Name',
                     type=str, action="store", required=True)
 parser.add_argument('--table-name', help='Table Name',
                     type=str, action="store", required=True)
-parser.add_argument('--key', help='Match Key',
+parser.add_argument('--key', help='Match Key', nargs='*',
                     type=str, action="store", required=True)
 parser.add_argument('--action', help='Action',
                     type=str, action="store", required=True)
-parser.add_argument('--para-num', help='Number of Para',
-                    type=int, action="store", required=False, default=0)
 parser.add_argument('para', nargs='*', type=str)
 args = parser.parse_args()
 
@@ -32,28 +30,29 @@ def main():
     # Get Table Name
     table_name = args.table_name
     
+    key = ''
     # Get Match Key
-    key = args.key
+    for i in args.key:
+        key = key+' '
+        key = key+i
 
     # Get Action
     action = args.action
 
-    # Get Number of Paras
-    num = args.para_num
-
     paras = ''
     
-    if num != 0 :
+    if args.para :
         para = args.para
-        for i in range(num) :
+        for i in args.para :
             paras = paras+' '
-            paras = paras+para[i]
-        table_info_cmd = "echo 'table_add %s %s %s =>%s' > cmd/table_add.txt" % (table_name, action, key, paras)
+            paras = paras+i
+        table_info_cmd = "echo 'table_add %s %s%s =>%s' > cmd/table_add.txt" % (table_name, action, key, paras)
     else :
-        table_info_cmd = "echo 'table_add %s %s %s =>' > cmd/table_add.txt" % (table_name, action, key)
+        table_info_cmd = "echo 'table_add %s %s%s =>' > cmd/table_add.txt" % (table_name, action, key)
 
-    #print(table_info_cmd)
-
+    # Debug
+    # print(table_info_cmd)
+    
     os.system(table_info_cmd)
     cmd = "./simple_switch_CLI --thrift-port %d < cmd/table_add.txt" % thrift_port
     os.system("%s > handle_tmp.txt" % cmd)
