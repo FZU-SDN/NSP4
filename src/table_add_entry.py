@@ -51,13 +51,15 @@ def main():
         table_info_cmd = "echo 'table_add %s %s%s =>' > cmd/table_add.txt" % (table_name, action, key)
 
     # Debug
-    # print(table_info_cmd)
+    #print(table_info_cmd)
     
     os.system(table_info_cmd)
     cmd = "./simple_switch_CLI --thrift-port %d < cmd/table_add.txt" % thrift_port
-    os.system("%s > handle_tmp.txt" % cmd)
+    os.system(cmd) 
+    #os.system("%s > handle_tmp.txt" % cmd)
     os.system("rm -rf cmd/table_add.txt")
     
+    """
     # Get Handle
     text = open('handle_tmp.txt', "r")
     for line in text.readlines():
@@ -68,6 +70,7 @@ def main():
             handle = line[i:-1]
             os.system("echo '%s' >> handle/%s_%s.txt" % (handle, sw_name, table_name)) 
     os.system("rm -rf handle_tmp.txt")        
+    """
 
 if __name__ == '__main__':
     main()

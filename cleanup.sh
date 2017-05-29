@@ -6,6 +6,4 @@
 rm -rf init/*.pcap 
 rm -rf init/*.json
 rm -rf script/*.pyc
-rm -rf src/handle/*.txt
 sudo mn -c
-

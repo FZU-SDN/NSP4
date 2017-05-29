@@ -14,8 +14,10 @@ parser.add_argument('--swname', help='Switch Name',
                     type=str, action="store", required=True)
 parser.add_argument('--table-name', help='Table Name',
                     type=str, action="store", required=True)
-parser.add_argument('--ops-num', help='Operation Number',
-                    type=int, action="store", required=True)
+parser.add_argument('--handle', help='Handle',
+                    type=str, action="store", required=True)
+#parser.add_argument('--ops-num', help='Operation Number',
+#                    type=int, action="store", required=True)
 args = parser.parse_args()
 
 def main():
@@ -26,7 +28,16 @@ def main():
 
     # Get Table Name
     table_name = args.table_name
+
+    # Get Handle
+    table_handle = args.handle
     
+    runtime_cmd = "table_delete %s %s" % (table_name, table_handle)
+    os.system('echo %s > table_delete.txt' % runtime_cmd)
+    os.system("./simple_switch_CLI --thrift-port %d < table_delete.txt" % thrift_port)
+    os.system('rm -rf table_delete.txt')
+
+    """
     # Get Operation Number
     number = args.ops_num
 
@@ -42,6 +53,7 @@ def main():
             os.system("./simple_switch_CLI --thrift-port %d < cmd/table_delete.txt" % (thrift_port))
             #os.system("rm -rf cmd/table_delete.txt")
             break
+    """
 
 if __name__ == '__main__':
     main()
