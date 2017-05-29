@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import re
 import argparse
 from time import sleep
 import os
@@ -13,12 +14,10 @@ parser.add_argument('--swname', help='Switch Name',
                     type=str, action="store", required=True)
 parser.add_argument('--table-name', help='Table Name',
                     type=str, action="store", required=True)
-parser.add_argument('--key', help='Match Key',
+parser.add_argument('--key', help='Match Key', nargs='*',
                     type=str, action="store", required=True)
 parser.add_argument('--action', help='Action',
                     type=str, action="store", required=True)
-parser.add_argument('--para-num', help='Number of Para',
-                    type=int, action="store", required=False, default=0)
 parser.add_argument('para', nargs='*', type=str)
 args = parser.parse_args()
 
@@ -31,32 +30,47 @@ def main():
     # Get Table Name
     table_name = args.table_name
     
+    key = ''
     # Get Match Key
-    key = args.key
+    for i in args.key:
+        key = key+' '
+        key = key+i
 
     # Get Action
     action = args.action
 
-    # Get Number of Paras
-    num = args.para_num
-
     paras = ''
     
-    if num != 0 :
+    if args.para :
         para = args.para
-        for i in range(num) :
+        for i in args.para :
             paras = paras+' '
-            paras = paras+para[i]
-        table_info_cmd = "echo 'table_add %s %s %s =>%s' > cmd/table_add.txt" % (table_name, key, action, paras)
+            paras = paras+i
+        table_info_cmd = "echo 'table_add %s %s%s =>%s' > /home/wpq/NSP4/src/cmd/table_add.txt" % (table_name, action, key, paras)
     else :
-        table_info_cmd = "echo 'table_add %s %s %s =>' > cmd/table_add.txt" % (table_name, key, action)
+        table_info_cmd = "echo 'table_add %s %s%s =>' > /home/wpq/NSP4/src/cmd/table_add.txt" % (table_name, action, key)
 
+    # Debug
     #print(table_info_cmd)
-
+    
     os.system(table_info_cmd)
-    cmd = "./simple_switch_CLI --thrift-port %d < cmd/table_add.txt" % thrift_port
-    os.system(cmd)
+    cmd = "python /home/wpq/NSP4/src/simple_switch_CLI --thrift-port %d < /home/wpq/NSP4/src/cmd/table_add.txt" % thrift_port
+    os.system(cmd) 
+    #os.system("%s > handle_tmp.txt" % cmd)
     os.system("rm -rf cmd/table_add.txt")
+    
+    """
+    # Get Handle
+    text = open('handle_tmp.txt', "r")
+    for line in text.readlines():
+        if line[0] == 'E':
+            for i in range(len(line)):
+                if line[i].isdigit():
+                    break
+            handle = line[i:-1]
+            os.system("echo '%s' >> handle/%s_%s.txt" % (handle, sw_name, table_name)) 
+    os.system("rm -rf handle_tmp.txt")        
+    """
 
 if __name__ == '__main__':
     main()

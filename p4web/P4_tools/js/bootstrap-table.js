@@ -458,7 +458,7 @@
             return false;
         },
         onRefresh: function (params) {
-          return false;
+            return false;
         },
         onResetView: function () {
             return false;
@@ -885,10 +885,10 @@
 
         this.$selectAll = this.$header.find('[name="btSelectAll"]');
         this.$selectAll.off('click').on('click', function () {
-                var checked = $(this).prop('checked');
-                that[checked ? 'checkAll' : 'uncheckAll']();
-                that.updateSelected();
-            });
+            var checked = $(this).prop('checked');
+            that[checked ? 'checkAll' : 'uncheckAll']();
+            that.updateSelected();
+        });
     };
 
     BootstrapTable.prototype.initFooter = function () {
@@ -1059,7 +1059,7 @@
                     sprintf(' btn-%s', this.options.buttonsClass) +
                     sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="paginationSwitch" title="%s">',
-                    this.options.formatPaginationSwitch()),
+                this.options.formatPaginationSwitch()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.paginationSwitchDown),
                 '</button>');
         }
@@ -1069,7 +1069,7 @@
                     sprintf(' btn-%s', this.options.buttonsClass) +
                     sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="refresh" title="%s">',
-                    this.options.formatRefresh()),
+                this.options.formatRefresh()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.refresh),
                 '</button>');
         }
@@ -1079,14 +1079,14 @@
                     sprintf(' btn-%s', this.options.buttonsClass) +
                     sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="toggle" title="%s">',
-                    this.options.formatToggle()),
+                this.options.formatToggle()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.toggle),
                 '</button>');
         }
 
         if (this.options.showColumns) {
             html.push(sprintf('<div class="keep-open btn-group" title="%s">',
-                    this.options.formatColumns()),
+                this.options.formatColumns()),
                 '<button type="button" class="btn' +
                 sprintf(' btn-%s', this.options.buttonsClass) +
                 sprintf(' btn-%s', this.options.iconSize) +
@@ -1138,8 +1138,8 @@
         if (this.options.showToggle) {
             this.$toolbar.find('button[name="toggle"]')
                 .off('click').on('click', function () {
-                    that.toggleView();
-                });
+                that.toggleView();
+            });
         }
 
         if (this.options.showColumns) {
@@ -1228,61 +1228,61 @@
             }
 
             var s = this.searchText && (this.options.escape ?
-                escapeHTML(this.searchText) : this.searchText).toLowerCase();
+                    escapeHTML(this.searchText) : this.searchText).toLowerCase();
             var f = $.isEmptyObject(this.filterColumns) ? null : this.filterColumns;
 
             // Check filter
             this.data = f ? $.grep(this.options.data, function (item, i) {
-                for (var key in f) {
-                    if ($.isArray(f[key]) && $.inArray(item[key], f[key]) === -1 ||
+                    for (var key in f) {
+                        if ($.isArray(f[key]) && $.inArray(item[key], f[key]) === -1 ||
                             item[key] !== f[key]) {
-                        return false;
+                            return false;
+                        }
                     }
-                }
-                return true;
-            }) : this.options.data;
+                    return true;
+                }) : this.options.data;
 
             this.data = s ? $.grep(this.data, function (item, i) {
-                for (var j = 0; j < that.header.fields.length; j++) {
+                    for (var j = 0; j < that.header.fields.length; j++) {
 
-                    if (!that.header.searchables[j]) {
-                        continue;
-                    }
-
-                    var key = $.isNumeric(that.header.fields[j]) ? parseInt(that.header.fields[j], 10) : that.header.fields[j];
-                    var column = that.columns[getFieldIndex(that.columns, key)];
-                    var value;
-
-                    if (typeof key === 'string') {
-                        value = item;
-                        var props = key.split('.');
-                        for (var prop_index = 0; prop_index < props.length; prop_index++) {
-                            value = value[props[prop_index]];
+                        if (!that.header.searchables[j]) {
+                            continue;
                         }
 
-                        // Fix #142: respect searchForamtter boolean
-                        if (column && column.searchFormatter) {
-                            value = calculateObjectValue(column,
-                                that.header.formatters[j], [value, item, i], value);
-                        }
-                    } else {
-                        value = item[key];
-                    }
+                        var key = $.isNumeric(that.header.fields[j]) ? parseInt(that.header.fields[j], 10) : that.header.fields[j];
+                        var column = that.columns[getFieldIndex(that.columns, key)];
+                        var value;
 
-                    if (typeof value === 'string' || typeof value === 'number') {
-                        if (that.options.strictSearch) {
-                            if ((value + '').toLowerCase() === s) {
-                                return true;
+                        if (typeof key === 'string') {
+                            value = item;
+                            var props = key.split('.');
+                            for (var prop_index = 0; prop_index < props.length; prop_index++) {
+                                value = value[props[prop_index]];
+                            }
+
+                            // Fix #142: respect searchForamtter boolean
+                            if (column && column.searchFormatter) {
+                                value = calculateObjectValue(column,
+                                    that.header.formatters[j], [value, item, i], value);
                             }
                         } else {
-                            if ((value + '').toLowerCase().indexOf(s) !== -1) {
-                                return true;
+                            value = item[key];
+                        }
+
+                        if (typeof value === 'string' || typeof value === 'number') {
+                            if (that.options.strictSearch) {
+                                if ((value + '').toLowerCase() === s) {
+                                    return true;
+                                }
+                            } else {
+                                if ((value + '').toLowerCase().indexOf(s) !== -1) {
+                                    return true;
+                                }
                             }
                         }
                     }
-                }
-                return false;
-            }) : this.data;
+                    return false;
+                }) : this.data;
         }
     };
 
@@ -1343,27 +1343,27 @@
             '<div class="pull-' + this.options.paginationDetailHAlign + ' pagination-detail">',
             '<span class="pagination-info">',
             this.options.onlyInfoPagination ? this.options.formatDetailPagination(this.options.totalRows) :
-            this.options.formatShowingRows(this.pageFrom, this.pageTo, this.options.totalRows),
+                this.options.formatShowingRows(this.pageFrom, this.pageTo, this.options.totalRows),
             '</span>');
 
         if (!this.options.onlyInfoPagination) {
             html.push('<span class="page-list">');
 
             var pageNumber = [
-                    sprintf('<span class="btn-group %s">',
-                        this.options.paginationVAlign === 'top' || this.options.paginationVAlign === 'both' ?
-                            'dropdown' : 'dropup'),
-                    '<button type="button" class="btn' +
-                    sprintf(' btn-%s', this.options.buttonsClass) +
-                    sprintf(' btn-%s', this.options.iconSize) +
-                    ' dropdown-toggle" data-toggle="dropdown">',
-                    '<span class="page-size">',
-                    $allSelected ? this.options.formatAllRows() : this.options.pageSize,
-                    '</span>',
-                    ' <span class="caret"></span>',
-                    '</button>',
-                    '<ul class="dropdown-menu" role="menu">'
-                ];
+                sprintf('<span class="btn-group %s">',
+                    this.options.paginationVAlign === 'top' || this.options.paginationVAlign === 'both' ?
+                        'dropdown' : 'dropup'),
+                '<button type="button" class="btn' +
+                sprintf(' btn-%s', this.options.buttonsClass) +
+                sprintf(' btn-%s', this.options.iconSize) +
+                ' dropdown-toggle" data-toggle="dropdown">',
+                '<span class="page-size">',
+                $allSelected ? this.options.formatAllRows() : this.options.pageSize,
+                '</span>',
+                ' <span class="caret"></span>',
+                '</button>',
+                '<ul class="dropdown-menu" role="menu">'
+            ];
 
             if (typeof this.options.pageList === 'string') {
                 var list = this.options.pageList.replace('[', '').replace(']', '')
@@ -1750,15 +1750,15 @@
                         that.options.undefinedText : value;
 
                     text = that.options.cardView ? ['<div class="card-view">',
-                        that.options.showHeader ? sprintf('<span class="title" %s>%s</span>', style,
-                            getPropertyFromOther(that.columns, 'field', 'title', field)) : '',
-                        sprintf('<span class="value">%s</span>', value),
-                        '</div>'
-                    ].join('') : [sprintf('<td%s %s %s %s %s %s %s>',
-                        id_, class_, style, data_, rowspan_, colspan_, title_),
-                        value,
-                        '</td>'
-                    ].join('');
+                            that.options.showHeader ? sprintf('<span class="title" %s>%s</span>', style,
+                                    getPropertyFromOther(that.columns, 'field', 'title', field)) : '',
+                            sprintf('<span class="value">%s</span>', value),
+                            '</div>'
+                        ].join('') : [sprintf('<td%s %s %s %s %s %s %s>',
+                            id_, class_, style, data_, rowspan_, colspan_, title_),
+                            value,
+                            '</td>'
+                        ].join('');
 
                     // Hide empty data on Card view when smartDisplay is set to true.
                     if (that.options.cardView && that.options.smartDisplay && value === '') {

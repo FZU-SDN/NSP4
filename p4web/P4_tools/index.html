@@ -3,13 +3,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>P4编译工具</title>
+    <title>P4 tools</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 </head>
-rr
-<body >
+<body onload="is_first()">
  <!-- /.navbar-->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
@@ -20,14 +19,14 @@ rr
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><span>P4编译工具 </span></a>
+                <a class="navbar-brand" href="#"><span>P4 tools</span></a>
             </div>
         </div>
     </nav>
 
     <div id="sidebar-collapse" class="col-sm-4 sidebar">
     <div style="width: 50px;height: 50px;"></div>
-    <div class="alert alert-info" role="alert">P4文件放在....</div>
+    <div class="alert alert-info" role="alert">P4文件放在 <span style="color: #d43f3a">NSP4/p4src</span> 所在目录下</div>
      <div class="input-group">
       <span class="input-group-addon" id="basic-addon1">主机Host</span>
       <input id="host-number" type="text" class="form-control" placeholder="输入主机数目" aria-describedby="basic-addon1">
@@ -42,7 +41,7 @@ rr
       <span class="input-group-addon" id="basic-addon1">链路Links</span>
         <div class="input-group-add" >  
         </div>  
-    <li role="presentation" class="divider">例：s1 s2 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h1-h2</li>
+    <li role="presentation" class="divider">例：s1 s2 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h1 h2</li>
     </div>
 
 <div class="btn-group" role="group" style="padding-left: 15px;">
@@ -63,15 +62,9 @@ rr
                 </div>
                 <div class="panel panel-default">
                   <!-- Default panel contents -->
-                  <div class="panel-heading">表格Table</div>
+                  <div class="panel-heading">交换机流表信息</div>
                   <!-- Table -->
-                  <table class="table table-bordered table-hover table-responsive">
-                    <tr>
-                    <td> s1</td>
-                    <td> s2</td>
-                    <td> s3</td>
-                    <td> s4</td>
-                    </tr>
+                  <table class="table table-bordered" id="table">
                   </table>
                 </div>
             </div>
@@ -99,9 +92,6 @@ rr
               'field': 'data',
           });
     });
-//    $('#host-number')[0].value
-//
-//    $('.input-group > .form-control').slice(2)[0].value
 
 
     var canvas = document.getElementById('canvas');
@@ -112,13 +102,28 @@ rr
     var links_table_raw;
     var host_num;
     var switch_num;
+
+    
+    function is_first() {
+        if(sessionStorage.links_table != null) {
+            console.log("second");
+            create_topo();
+            create_switch_table();
+        } else {
+            console.log("first");
+//            pre_handle();
+        }
+
+    }
+    
+    //错误处理
     function pre_handle() {
 
         try {
             host_num = parseInt($('#host-number')[0].value);
             if (isNaN(host_num)) throw new Error('主机数目输入错误');
             switch_num = parseInt($('#switch-number')[0].value);
-            if (isNaN(switch_num)) throw  new Error('交换机数目输入错误');
+            if (isNaN(switch_num)) throw new Error('交换机数目输入错误');
         } catch (e){
             alert(e);
             return;
@@ -171,7 +176,8 @@ rr
 
 
 
-        var h = 0, s = 0, flag = 0, hArr = [], sArr = [];
+        var h = 0, s = 0, flag = 0, hArr = [], sArr = [], h_flag = [];
+        var h_sum_Arr = [];
         var arr = links_table.map(x => x.split(/([hs])|\s+/).filter(x => x));
         console.log(arr);
         var res = arr.every(function (item) {
@@ -197,6 +203,11 @@ rr
                 h = 0, s = 0, hArr = [], sArr = [];
                 return false;
             }
+            if (h > 0) {
+                h_flag[hArr[0]] = 1;
+            }
+
+
             try {
                 if (hArr[0] > host_num || hArr[1] > host_num || sArr[0] > switch_num || sArr[1] > switch_num)
                     throw new Error("链路主机信息超过指定范围");
@@ -204,16 +215,29 @@ rr
                 alert(e);
                 return false;
             }
+            
             h = 0, s = 0, hArr = [], sArr = [];
             return true;
         });
         if (!res) return;
 
-        creat_topo();
-        request();
+        for(var i=1; i <= host_num; i++){
+            if(h_flag[i] != 1){
+                alert("出现无连接的主机");
+                return false;
+            }
+        }
 
+        sessionStorage.links_table = links_table;
+        sessionStorage.host_num = host_num;
+        sessionStorage.switch_num = switch_num;
+
+        create_topo();
+        create_switch_table();
+        request();
     }
 
+    //发出请求
     function request() {
 
         var host_num = parseInt($('#host-number')[0].value);
@@ -235,20 +259,30 @@ rr
             }});
     }
 
-    function creat_topo() {
+    //创建拓扑
+    function create_topo() {
 
                 var hosts = new Array();
                 var switches = new Array();
                 var links = new Array();
-//                var links_table = $('.input-group > .form-control').slice(2).toArray();
-//                links_table = links_table.map(function (item) {
-//                    return item.value;
-//                });
-                console.log(links_table);
-//                showModalDialog(links_table);
 
-                var host_num = parseInt($('#host-number')[0].value);
-                var switch_num = parseInt($('#switch-number')[0].value);
+
+                console.log("links= ",typeof (links_table),"links_info",links_table);
+
+                console.log("session ",typeof (sessionStorage.links_table), sessionStorage.links_table);
+
+                sessionStorage.links_table += ',';
+
+                var re = /(.*?)(?=\,)/ig;
+                var information = sessionStorage.links_table.match(re);
+
+                information = information.filter(function (t) {
+                    return t != "";
+                });
+
+                var links_table = information;
+                var host_num = parseInt(sessionStorage.host_num);
+                var switch_num = parseInt(sessionStorage.switch_num);
                 var link_num = links_table.length;
 
 
@@ -278,14 +312,14 @@ rr
                 }
 
                 for(i=0;i<switch_num;i++){
-                    switches[i+1].setLocation(10+i*100,10);
+                    switches[i+1].setLocation(10+i*200,10);
                     switches[i+1].setSize(100,100);
                     switches[i+1].setImage('switch2.png');
                     scene.add(switches[i+1]);
                 }
 
                 for(i=0;i<host_num;i++){
-                    hosts[i+1].setLocation(10+i*70,200);
+                    hosts[i+1].setLocation(10+i*200,200);
                     hosts[i+1].setSize(50,50);
                     hosts[i+1].setImage('host.png');
                     scene.add(hosts[i+1]);
@@ -324,6 +358,31 @@ rr
                     scene.add(links[i]);
                 }
      }
+
+    //创建交换机列表
+    function create_switch_table() {
+        var cre_switch_table_number = parseInt(sessionStorage.switch_num);
+
+        $("table").empty();
+
+        for (var i = 1; i <= cre_switch_table_number; i++) {
+
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            var a = document.createElement('a');
+            $(tr).append(td);
+            $(td).append(a);
+            a.style = 'padding-left:20px;font-size:20px';
+            a.id = 'switch' + i;
+            a.href = 'test.html?switch_no=' + i;
+            a.innerHTML = 'S' + i;
+//            var tr = "<tr><td><a style='padding-left:20px;font-size:20px;' id='switch' href='test.html?2'>S" + i + "<a></td></tr>";
+            $("#table").append(tr);
+
+        }
+    }
+
+
 
 </script>
 

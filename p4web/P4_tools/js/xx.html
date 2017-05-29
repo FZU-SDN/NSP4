@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="ss()">
+
+
+<script>
+
+    function ss() {
+        var str_add_btn = "<div id='toolbar' class='btn-group' style='float:right'><button type='button' class='btn btn-default' data-toggle='modal' data-target='myModal'>下发流表</button>";
+
+        $('body').append(str_add_btn);
+        var formid = "form_";
+        var str_add_btn_dialog = "<form id='" + formid + "'><div class='modal fade' id='myModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' style='display: none;' aria-hidden='true'><div class='modal-dialog' role='document'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button><h4 class='modal-title' id='myModalLabel'>xxxxx</h4></div><div class='modal-body'>";
+
+        for (var l = 0; l<2; l++) {
+            str_add_btn_dialog += "<div class='input-group'><span style='width: 152px;' class='input-group-addon'>555</span><input type='text' class='form-control' name='555'></div>";
+        }
+        str_add_btn_dialog += "<div class='input-group'><span style='width: 152px;' class='input-group-addon'>action</span><input type='text' class='form-control' name='action'></div><div class='input-group'><span style='width: 152px;' class='input-group-addon'>action-parameter</span><input type='text' class='form-control' name='action_parameter'></div></div><div class='modal-footer'><button type='button' class='btn btn-default' data-dismiss='modal'>关闭</button><button  class='btn btn-primary'>确定</button></div></div></div></div></form>";
+
+
+        $('body').append(str_add_btn_dialog);
+
+    }
+
+</script>
+</body>
+
+
+</html>
