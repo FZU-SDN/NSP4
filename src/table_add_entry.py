@@ -49,6 +49,7 @@ def main():
         table_info_cmd = "echo 'table_add %s %s%s =>%s' > /home/wpq/NSP4/src/cmd/table_add.txt" % (table_name, action, key, paras)
     else :
         table_info_cmd = "echo 'table_add %s %s%s =>' > /home/wpq/NSP4/src/cmd/table_add.txt" % (table_name, action, key)
+        
 
     # Debug
     #print(table_info_cmd)

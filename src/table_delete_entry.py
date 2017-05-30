@@ -40,6 +40,7 @@ def main():
     """
     # Get Operation Number
     number = args.ops_num
+
     handle_file = 'handle/%s_%s.txt' % (sw_name, table_name)
     # remove the entry
     i, text = 1, open(handle_file, "r")
