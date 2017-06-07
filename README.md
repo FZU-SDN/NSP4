@@ -108,7 +108,7 @@ ryu-manager ./p4web.py
 
 ![1](http://images2015.cnblogs.com/blog/990007/201705/990007-20170531124619618-154243598.png)
 
-4、Input the information of topology on the interface, and click the button of **确定**, you will find the GUI of topology appear the browser. Then start up the mininet with P4 by the following command.
+4、Input the information of topology on the interface, and click the button of **提交**, you will find the GUI of topology appear the browser. Then start up the mininet with P4 by the following command.
 
 ![2](http://images2015.cnblogs.com/blog/990007/201705/990007-20170531124620539-1327136931.png)
 
