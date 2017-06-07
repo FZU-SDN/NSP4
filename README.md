@@ -73,10 +73,10 @@ NSP4:  Network Simulator for P4
 1、In the directory of **src**，change the path information from ```/home/wpq``` to the NSP4 directory information. The code need to modify contain the following file:
 
 -  show_sw_tables.py
-- show_table_entry.py
-- show_table_info.py
-- table_add_entry.py
-- table_delete_entry.py
+-  show_table_entry.py
+-  show_table_info.py
+-  table_add_entry.py
+-  table_delete_entry.py
 
 Example, for the ```show_sw_tables.py```, you should change the sentence from 
 
@@ -146,4 +146,4 @@ For example:
 - The path information is complex
 - Some function  such as counter is not supported
 
-We invite you to extend NSP4 to support more function, helping the learner of P4 config the switch more convenient.
+We invite you to extend NSP4 to support more function, helping the learner of P4 to config the switch more convenient.
