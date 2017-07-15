@@ -118,14 +118,17 @@ class GUI_P4_ServerController(ControllerBase):
                     cmd_str = 'python /home/wpq/NSP4/src/show_table_entry.py --swname s' + switch_no + ' --table-name ' + table_name
                     status, output = commands.getstatusoutput(cmd_str)
 
+                    print output
 
                     matchObj0 = re.findall('(0x[\S]+)', output, re.M | re.I)
-                    matchObj1 = re.findall('[\*\s](\S+)(?=\s*:\sEXACT)', output, re.M | re.I)
+                    matchObj1 = re.findall('\*\s(\S+)(?=\s*:\s)', output, re.M | re.I)
                     matchObj2 = re.findall('[\s] (\S+)(?=\n)', output, re.M | re.I)
-                    matchObj3 = re.findall('(\S+)\s- ?(\S*)', output, re.M | re.I)
+                    matchObj3 = re.findall('(\S+)\s- ?([\S ]*)', output, re.M | re.I)
 
                     table_entry = [
                     ]
+
+
                     for j in range(len(matchObj3)):
                         entry = {}
                         entry['handle'] = int(matchObj0[j], 16)
