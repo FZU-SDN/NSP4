@@ -24,9 +24,9 @@ def main():
     # Get Table Name
     table_name = args.table_name
     
-    table_info_cmd = "echo 'table_dump %s' > /home/wpq/NSP4/src/cmd/table_dump.txt" % table_name
+    table_info_cmd = "echo 'table_dump %s' > ./cmd/table_dump.txt" % table_name
     os.system(table_info_cmd)
-    cmd = "python /home/wpq/NSP4/src/simple_switch_CLI --thrift-port %d < /home/wpq/NSP4/src/cmd/table_dump.txt" % thrift_port
+    cmd = "python ./simple_switch_CLI --thrift-port %d < ./cmd/table_dump.txt" % thrift_port
     os.system(cmd)
     os.system("rm -rf cmd/table_info.txt")
 
