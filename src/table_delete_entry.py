@@ -33,9 +33,9 @@ def main():
     table_handle = args.handle
     
     runtime_cmd = "table_delete %s %s" % (table_name, table_handle)
-    os.system('echo %s > /home/wpq/NSP4/src/cmd/table_delete.txt' % runtime_cmd)
-    os.system("python /home/wpq/NSP4/src/simple_switch_CLI --thrift-port %d < /home/wpq/NSP4/src/cmd/table_delete.txt" % thrift_port)
-    os.system('rm -rf /home/wpq/NSP4/src/cmd/table_delete.txt')
+    os.system('echo %s > ./cmd/table_delete.txt' % runtime_cmd)
+    os.system("python ./simple_switch_CLI --thrift-port %d < ./cmd/table_delete.txt" % thrift_port)
+    os.system('rm -rf ./cmd/table_delete.txt')
 
     """
     # Get Operation Number
