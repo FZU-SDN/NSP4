@@ -46,16 +46,16 @@ def main():
         for i in args.para :
             paras = paras+' '
             paras = paras+i
-        table_info_cmd = "echo 'table_add %s %s%s =>%s' > /home/wpq/NSP4/src/cmd/table_add.txt" % (table_name, action, key, paras)
+        table_info_cmd = "echo 'table_add %s %s%s =>%s' > ./cmd/table_add.txt" % (table_name, action, key, paras)
     else :
-        table_info_cmd = "echo 'table_add %s %s%s =>' > /home/wpq/NSP4/src/cmd/table_add.txt" % (table_name, action, key)
+        table_info_cmd = "echo 'table_add %s %s%s =>' > ./cmd/table_add.txt" % (table_name, action, key)
         
 
     # Debug
     #print(table_info_cmd)
     
     os.system(table_info_cmd)
-    cmd = "python /home/wpq/NSP4/src/simple_switch_CLI --thrift-port %d < /home/wpq/NSP4/src/cmd/table_add.txt" % thrift_port
+    cmd = "python ./simple_switch_CLI --thrift-port %d < ./cmd/table_add.txt" % thrift_port
     os.system(cmd) 
     #os.system("%s > handle_tmp.txt" % cmd)
     os.system("rm -rf cmd/table_add.txt")
