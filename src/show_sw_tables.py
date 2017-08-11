@@ -19,7 +19,7 @@ def main():
     index = int(sw_name[1:])-1
     thrift_port = _THRIFT_BASE_PORT+index
     
-    cmd = "python /home/wpq/NSP4/src/simple_switch_CLI --thrift-port %d < /home/wpq/NSP4/src/cmd/show_tables.txt" % thrift_port
+    cmd = "python ./simple_switch_CLI --thrift-port %d < ./cmd/show_tables.txt" % thrift_port
     os.system(cmd)
 
 if __name__ == '__main__':
