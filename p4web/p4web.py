@@ -1,16 +1,14 @@
+#!/usr/bin/env python
+
 import os
 import commands
 import re
 from webob.static import DirectoryApp
-
 from ryu.app.wsgi import ControllerBase, WSGIApplication, route
 from ryu.base import app_manager
 import json
 
-
-
 PATH = os.path.dirname(__file__)
-
 
 # Serving static files
 class GUIServerApp(app_manager.RyuApp):
@@ -67,14 +65,13 @@ class GUI_P4_ServerController(ControllerBase):
 
                 print 'switches=%d' % switches
                 print "hosts=%d" % hosts
-                status, output = commands.getstatusoutput('cp -f topo.txt /home/wpq/NSP4/init')
+                status, output = commands.getstatusoutput('cp -f topo.txt ../init')
 
             elif kwargs['filename'] == "table":
-
                 switch_no = req.GET['switch_no']
                 switch_no = switch_no.encode('utf-8')
 
-                cmd_str = 'python /home/wpq/NSP4/src/show_sw_tables.py --swname s' + switch_no
+                cmd_str = 'python ../src/show_sw_tables.py --swname s' + switch_no
                 status, output = commands.getstatusoutput(cmd_str)
 
                 matchObj = re.findall('(\S+)(?=[\s]*\[.*\])', output, re.M | re.I)
@@ -91,7 +88,7 @@ class GUI_P4_ServerController(ControllerBase):
                     table_name = matchObj[i]
                     table_infor['table-name'] = table_name
 
-                    cmd_str = 'python /home/wpq/NSP4/src/show_table_info.py --swname s' + switch_no + ' --table-name ' + table_name
+                    cmd_str = 'python ../src/show_table_info.py --swname s' + switch_no + ' --table-name ' + table_name
                     status, output = commands.getstatusoutput(cmd_str)
 
 
@@ -115,7 +112,7 @@ class GUI_P4_ServerController(ControllerBase):
                     table_infor['action-number'] = 2
                     table_infor['action'] = action
 
-                    cmd_str = 'python /home/wpq/NSP4/src/show_table_entry.py --swname s' + switch_no + ' --table-name ' + table_name
+                    cmd_str = 'python ../src/show_table_entry.py --swname s' + switch_no + ' --table-name ' + table_name
                     status, output = commands.getstatusoutput(cmd_str)
 
                     print output
@@ -162,7 +159,7 @@ class GUI_P4_ServerController(ControllerBase):
 
                 action_sum = action + ' ' + action_parameter
 
-                cmd_str = 'python /home/wpq/NSP4/src/show_table_info.py --swname s' + switch_no + ' --table-name ' + table_name
+                cmd_str = 'python ../src/show_table_info.py --swname s' + switch_no + ' --table-name ' + table_name
                 status, output = commands.getstatusoutput(cmd_str)
 
                 match_table_key = re.findall('[=\t](\S*)(?=\(.*\,.*\))', output, re.M | re.I)
@@ -177,7 +174,7 @@ class GUI_P4_ServerController(ControllerBase):
 
                 print "match_key_value"
                 print match_key_value
-                cmd_str = 'python /home/wpq/NSP4/src/table_add_entry.py --swname s' + switch_no + ' --table-name ' + table_name + ' --key ' + match_key_value + '--action ' + action_sum
+                cmd_str = 'python ../src/table_add_entry.py --swname s' + switch_no + ' --table-name ' + table_name + ' --key ' + match_key_value + '--action ' + action_sum
                 status, output = commands.getstatusoutput(cmd_str)
 
                 print cmd_str
@@ -201,7 +198,7 @@ class GUI_P4_ServerController(ControllerBase):
                 switch_no = re.findall('([0-9]+)', switch_no, re.M | re.I)
                 switch_no = switch_no[0]
 
-                cmd_str = 'python /home/wpq/NSP4/src/table_delete_entry.py --swname s' + switch_no + ' --table-name ' + table_name + ' --handle ' + handle
+                cmd_str = 'python ../src/table_delete_entry.py --swname s' + switch_no + ' --table-name ' + table_name + ' --handle ' + handle
 
                 print cmd_str
                 status, output = commands.getstatusoutput(cmd_str)
@@ -210,6 +207,3 @@ class GUI_P4_ServerController(ControllerBase):
 
             req.path_info = kwargs['filename']
         return self.static_app(req)
-
-
-
