@@ -112,7 +112,7 @@ class GUI_P4_ServerController(ControllerBase):
                     for j in range(match_action_num):
                         action.append(match_action_key[j][0])
 
-                    table_infor['action-number'] = 2
+                    table_infor['action-number'] = match_action_num
                     table_infor['action'] = action
 
                     cmd_str = 'python /home/wpq/NSP4/src/show_table_entry.py --swname s' + switch_no + ' --table-name ' + table_name
