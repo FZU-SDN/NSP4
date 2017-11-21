@@ -77,7 +77,7 @@ class GUI_P4_ServerController(ControllerBase):
                 cmd_str = 'python /home/wpq/NSP4/src/show_sw_tables.py --swname s' + switch_no
                 status, output = commands.getstatusoutput(cmd_str)
 
-                matchObj = re.findall('(\S+)(?=[\s]*\[.*\])', output, re.M | re.I)
+                matchObj = re.findall('(\S+)(?=[\s]*\[i.*\])', output, re.M | re.I)
 
                 table_number = len(matchObj)
 
@@ -129,7 +129,7 @@ class GUI_P4_ServerController(ControllerBase):
                     ]
 
 
-                    for j in range(len(matchObj3)):
+                    for j in range(len(matchObj0)):
                         entry = {}
                         entry['handle'] = int(matchObj0[j], 16)
                         entry[matchObj1[j]] = matchObj2[j]
