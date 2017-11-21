@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 import os
 import commands
 import re
@@ -35,6 +36,8 @@ class GUI_P4_ServerController(ControllerBase):
         if kwargs['filename']:
             print kwargs['filename']
             if kwargs['filename'] == "ok":
+
+                # 用于创建拓扑文件
                 switches = req.GET['switches']
                 hosts = req.GET['hosts']
 
@@ -53,7 +56,7 @@ class GUI_P4_ServerController(ControllerBase):
                 link_information = req.GET['link_information']
                 link_information = link_information.encode('utf-8')
 
-
+                #正则匹配得到对应的链路信息，从而写到topo.txt中去
                 match_links = re.findall(r'(.*?),', link_information, re.M | re.I)
                 links = match_links
 
@@ -70,20 +73,22 @@ class GUI_P4_ServerController(ControllerBase):
                 status, output = commands.getstatusoutput('cp -f topo.txt /home/wpq/NSP4/init')
 
             elif kwargs['filename'] == "table":
-
+                #显示流表专用
                 switch_no = req.GET['switch_no']
                 switch_no = switch_no.encode('utf-8')
 
+                #--------得到交换机内所有的【表名】（以------为该部分功能的结尾）
+
                 cmd_str = 'python /home/wpq/NSP4/src/show_sw_tables.py --swname s' + switch_no
                 status, output = commands.getstatusoutput(cmd_str)
-
+                #正则匹配得到交换机内所有的【表名】
                 matchObj = re.findall('(\S+)(?=[\s]*\[i.*\])', output, re.M | re.I)
 
                 table_number = len(matchObj)
-
+                # -----------得到交换机内所有的【表名】----------------#
                 data_json = {}
 
-                print matchObj
+                # print matchObj
                 data_json['table-number'] = table_number
                 table = []
                 for i in range(table_number):
@@ -91,11 +96,13 @@ class GUI_P4_ServerController(ControllerBase):
                     table_name = matchObj[i]
                     table_infor['table-name'] = table_name
 
+                    #查询对应表的匹配项以及动作
                     cmd_str = 'python /home/wpq/NSP4/src/show_table_info.py --swname s' + switch_no + ' --table-name ' + table_name
                     status, output = commands.getstatusoutput(cmd_str)
 
-
+                    #得到该表对应的匹配项
                     match_table_key = re.findall('[=\t](\S*)(?=\(.*\,.*\))', output, re.M | re.I)
+                    #得到该表对应的动作
                     match_action_key = re.findall('[\n](\S+)(?=[\s]*\[(.*)\])', output, re.M | re.I)
 
 
@@ -112,17 +119,21 @@ class GUI_P4_ServerController(ControllerBase):
                     for j in range(match_action_num):
                         action.append(match_action_key[j][0])
 
-                    table_infor['action-number'] = 2
+                    table_infor['action-number'] = match_action_num
                     table_infor['action'] = action
 
+                    #查询对应表，所对应的表项
                     cmd_str = 'python /home/wpq/NSP4/src/show_table_entry.py --swname s' + switch_no + ' --table-name ' + table_name
                     status, output = commands.getstatusoutput(cmd_str)
 
                     print output
 
+                    #matchObj0 对应 表项 的 handle（唯一值)
                     matchObj0 = re.findall('(0x[\S]+)', output, re.M | re.I)
+
                     matchObj1 = re.findall('\*\s(\S+)(?=\s*:\s)', output, re.M | re.I)
                     matchObj2 = re.findall('[\s] (\S+)(?=\n)', output, re.M | re.I)
+                    #matchObj3 对应的动作，以及动作参数
                     matchObj3 = re.findall('(\S+)\s- ?([\S ]*)', output, re.M | re.I)
 
                     table_entry = [
@@ -145,7 +156,7 @@ class GUI_P4_ServerController(ControllerBase):
                 return json.dumps(data_json)
 
             elif kwargs['filename'] == 'add_entry':
-
+                #添加表项
 
                 switch_no = req.GET['switch-name']
                 table_name = req.GET['table-name']
@@ -193,7 +204,7 @@ class GUI_P4_ServerController(ControllerBase):
                 return json.dumps(output)
 
             elif kwargs['filename'] == 'del_entry':
-
+                #删除表项
                 handle = req.GET['handle'].encode('utf-8')
                 table_name = req.GET['table-name'].encode('utf-8')
                 switch_no = req.GET['switch-name'].encode('utf-8')
