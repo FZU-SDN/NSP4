@@ -1,8 +1,8 @@
-# NSP4
+# NSP4: Network Simulator for P4
 
-NSP4:  Network Simulator for P4
+**NSP4 is still under developing so that many functions are not supported in NSP4 yet. We invite you to extend NSP4 to create a better environment of learning P4 language.**
 
-## Modify the path information
+## Experiment Preparation
 
 1、In the directory of **src**，change the path information from ```/home/wpq``` to the NSP4 directory information. The code need to modify contain the following file:
 
@@ -28,7 +28,7 @@ cmd = "python <path for NSP4>/src/simple_switch_CLI --thrift-port %d < /home/wpq
 
 Like 1, you just modify the information from ```/home/wpq``` to the NSP4 directory, the line number of code includes 70、77、94、118、162、177、201.
 
-## Experimental steps
+## Hands-on Steps
 
 1、Put the P4 code which is correct to the directory of **p4src**.
 
@@ -75,9 +75,8 @@ For example:
 
 ![8](http://images2015.cnblogs.com/blog/990007/201705/990007-20170531124637539-179970778.png)
 
-## Problem existed
+## Existing Problems
 
 - The path information is complex
 - Some function  such as counter is not supported
-
-We invite you to extend NSP4 to support more function, helping the learner of P4 to config the switch more convenient.
+- Non-support of P4-16 language
