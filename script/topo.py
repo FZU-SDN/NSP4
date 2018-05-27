@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
-# Copyright 2017 FuZhou University SDNLab, Edu. 
+# Copyright 2013-present Barefoot Networks, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,9 +18,8 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.log import setLogLevel, info
 from mininet.cli import CLI
-from mininet.node import OVSController, RemoteController
 
-from p4ovs_mininet import P4Switch
+from p4_mininet import P4Switch, P4Host
 
 import argparse
 from time import sleep
@@ -31,7 +30,6 @@ _THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 _THRIFT_BASE_PORT = 22222
 
 parser = argparse.ArgumentParser(description='Mininet demo')
-
 parser.add_argument('--behavioral-exe', help='Path to behavioral executable',
                     type=str, action="store", required=True)
 parser.add_argument('--json', help='Path to JSON config file',
@@ -39,15 +37,11 @@ parser.add_argument('--json', help='Path to JSON config file',
 parser.add_argument('--cli', help='Path to BM CLI',
                     type=str, action="store", required=True)
 parser.add_argument('--mode', choices=['l2', 'l3'], type=str, default='l3')
-parser.add_argument('--controller-ip', help='Controller IP Address',
-                    type=str, action="store", required=False)
-parser.add_argument('--controller-port', help='Controller Port',
-                    type=int, action="store", required=False)
 
 args = parser.parse_args()
 
-# Use to config the hosts
-hosts = []
+sw_macs = []
+sw_addrs = []
 
 class MyTopo(Topo):
     def __init__(self, sw_path, json_path, nb_hosts, nb_switches, links, **opts):
@@ -55,33 +49,23 @@ class MyTopo(Topo):
         Topo.__init__(self, **opts)
 
         for i in xrange(nb_switches):
-            thrift_port = _THRIFT_BASE_PORT+i
-            self.addSwitch('s%d' % (i + 1), # dpid  = str('0x'+i), # add dpid
+           self.addSwitch('s%d' % (i + 1),
                             sw_path = sw_path,
                             json_path = json_path,
-                            thrift_port = thrift_port,
+                            thrift_port = _THRIFT_BASE_PORT + i,
                             pcap_dump = True,
                             device_id = i)
-        
+
         for h in xrange(nb_hosts):
-            hi = self.addHost('h%d' % (h + 1))
-            hosts.append(hi)
+            self.addHost('h%d' % (h + 1), ip="10.0.0.%d" % (h + 1),
+                    mac="00:00:00:00:00:0%d" % (h+1))
+            addrv = "10.0.0.%d" % (h+1)
+            macv = "00:00:00:00:00:0%d" % (h+1)
+            sw_addrs.append(addrv)
+            sw_macs.append(macv)
 
-def Connect(net, links):
-    # Connect the elements on the DataPlane.
-    for i, j in links:
-        print i, j
-        a = net.get(i)
-        b = net.get(j)
-        net.addLink(a, b)
-
-def HostConfig(net, nb_hosts):
-    # Config the hosts by IP and MAC address
-    for i in xrange(nb_hosts):
-        print 'Config hosts h%d' % (i+1)
-        obj = net.get(hosts[i])
-        obj.setIP("10.0.0.%d" % (i+1))
-        obj.setMAC("00:00:00:00:00:0%d" % (i+1))
+        for a, b in links:
+            self.addLink(a, b)
 
 def read_topo():
     nb_hosts = 0
@@ -100,6 +84,7 @@ def read_topo():
             links.append( (a, b) )
     return int(nb_hosts), int(nb_switches), links
 
+
 def main():
     nb_hosts, nb_switches, links = read_topo()
     
@@ -110,19 +95,9 @@ def main():
                   nb_hosts, nb_switches, links)
 
     net = Mininet(topo = topo,
+                  host = P4Host,
                   switch = P4Switch,
-                  controller = RemoteController)
-                  # controller = OVSController)
-    
-    # [Option] TODO: Add your own SDN Controller using net.addController()
-    # controller_IP = args.controller_ip
-    # controller_port = args.controller_port
-    # net.addController('c0', controller=RemoteController, ip=controller_IP, 
-    #                   port=controller_port)
-    
-    Connect(net, links)
-    HostConfig(net, nb_hosts)
-    
+                  controller = None )
     net.start()
 
     for n in xrange(nb_hosts):
@@ -143,12 +118,12 @@ def main():
 	if mode == "l2":
             h.setDefaultRoute("dev eth0")
         else:
-            h.setARP(sw_addr[n], sw_mac[n])
-	    h.setDefaultRoute("dev eth0 via %s" % sw_addr[n])
+            h.setARP(sw_addrs[n], sw_macs[n])
+	    h.setDefaultRoute("dev eth0 via %s" % sw_addrs[n])
 
     for n in xrange(nb_hosts):
         h = net.get('h%d' % (n + 1))
-	#h.describe()
+	h.describe()
 
     sleep(1)
 
