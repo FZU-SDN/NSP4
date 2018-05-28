@@ -1,6 +1,8 @@
 # NSP4: Network Simulator for P4
 
-**NSP4 is still under developing so that many functions are not supported in NSP4 yet. We invite you to extend NSP4 to create a better environment of learning P4 language.**
+**NSP4 is still under developing so that many functions are not supported in NSP4 yet. We invite you to extend NSP4 to create a better environment for learning the P4 language.**
+
+[发表在SDNLAB上的NSP4中文文档](https://www.sdnlab.com/19370.html)
 
 ## Experiment Preparation
 
