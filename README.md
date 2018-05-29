@@ -1,4 +1,4 @@
-# NSP4: Network Simulator for P4
+# NSP4: A Network Simulator for the P4 language
 
 **NSP4 is still under developing so that many functions are not supported in NSP4 yet. We invite you to extend NSP4 to create a better environment for learning the P4 language.**
 
@@ -6,7 +6,7 @@
 
 ## Experiment Preparation
 
-1、In the directory of **src**，change the path information from ```/home/wpq``` to the NSP4 directory information. The code need to modify contain the following file:
+1、In the directory of **`src/`**，change the path information from ```/home/wpq``` to the NSP4 directory information. The code need to modify contain the following file:
 
 -  show_sw_tables.py
 -  show_table_entry.py
@@ -32,7 +32,7 @@ Like 1, you just modify the information from ```/home/wpq``` to the NSP4 directo
 
 ## Hands-on Steps
 
-1、Put the P4 code which is correct to the directory of **p4src**.
+1、Put the P4 code which is correct to the directory of **p4src/**. Note that the P4 program which contains the control flows "ingress" and "egress" must be given with the name "switch.p4".
 
 2、Start up the ```p4web.py``` by the Ryu command **ryu-manager**.
 
